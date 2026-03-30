@@ -1,53 +1,68 @@
-import { View, StatusBar, Text } from "react-native";
-import styles from "./styles";
-import Row from "./Row";
-import Column from "./Column";
-import Box from "./Box";
+import React, {useState} from 'react';
+import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
+import Task from './components/Task';
+import styles from './components/styles';
 
 export default function App() {
+  const [task, setTask] = useState();
+  const [taskItems, setTaskItems] = useState([]);
+
+  const handleAddTask = () => {
+    Keyboard.dismiss();
+    setTaskItems([...taskItems, task])
+    setTask(null);
+  }
+
+  const completeTask = (index) => {
+    let itemsCopy = [...taskItems];
+    itemsCopy.splice(index, 1);
+    setTaskItems(itemsCopy)
+  }
+
   return (
     <View style={styles.container}>
-      <StatusBar hidden={false} />
-      <Row>
-        <Column>
-          <Box>#1</Box>
-          <Box>#2</Box>
-        </Column>
-        <Column>
-          <Box>#3</Box>
-          <Box>#4</Box>
-        </Column>
-      </Row>
-      <Row>
-        <Column>
-          <Box>#5</Box>
-          <Box>#6</Box>
-        </Column>
-        <Column>
-          <Box>#7</Box>
-          <Box>#8</Box>
-        </Column>
-      </Row>
-      <Row>
-        <Column>
-          <Box>#9</Box>
-          <Box>#10</Box>
-        </Column>
-        <Column>
-          <Box>#11</Box>
-          <Box>#12</Box>
-        </Column>
-      </Row>
+      {/*this enables scrolling when there's a lot of tasks*/}
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1
+        }}
+        keyboardShouldPersistTaps='handled'
+      >
+
+      {/*today's tasks*/}
+      <View style={styles.tasksWrapper}>
+        <Text style={styles.sectionTitle}>Today's tasks</Text>
+        <View style={styles.items}>
+          {/*tasks go here*/}
+          {
+            taskItems.map((item, index) => {
+              return (
+                <TouchableOpacity key={index}  onPress={() => completeTask(index)}>
+                  <Task text={item} /> 
+                </TouchableOpacity>
+              )
+            })
+          }
+        </View>
+      </View>
+        
+      </ScrollView>
+
+      {/*write task*/}
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.writeTaskWrapper}
+      >
+        <TextInput style={styles.input} placeholder={'Write a task'} value={task} onChangeText={text => setTask(text)} />
+        <TouchableOpacity onPress={() => handleAddTask()}>
+          <View style={styles.addWrapper}>
+            <Text style={styles.addText}>+</Text>
+          </View>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+      
     </View>
   );
 }
 
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
