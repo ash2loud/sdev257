@@ -40,4 +40,17 @@ export default function App() {
       </Row>
     </View>
   );
+<<<<<<< HEAD:app.js
 }
+=======
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+>>>>>>> 16e38ca1bf9b6101989e02df6f7b6ae36cc64152:App.js
